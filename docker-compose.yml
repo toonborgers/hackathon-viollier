@@ -35,6 +35,7 @@ logstash:
   build: logstash
   links:
     - elasticsearch
+
 # ELASTICSEARCH
 elasticsearch:
   image: elasticsearch-custom:1

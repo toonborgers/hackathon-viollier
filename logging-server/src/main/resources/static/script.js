@@ -5,7 +5,7 @@
 
 
     function loggingService($resource) {
-        var logger = $resource('/log');
+        var logger = $resource('/exception');
         return {
             log: function () {
                 logger.query()
