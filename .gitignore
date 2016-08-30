@@ -1,0 +1,6 @@
+.idea/
+logging-server/.idea
+logging-server/.gradle
+logging-server/build
+
+*.iml

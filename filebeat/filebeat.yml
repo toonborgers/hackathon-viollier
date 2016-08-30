@@ -1,0 +1,12 @@
+filebeat:
+  prospectors:
+    -
+      paths:
+        - /tmp/server.log
+      fields:
+        environment: ${ENVIRONMENT:env}
+        application: ${APPLICATION:app}
+output:
+  logstash:
+    hosts: ["logstash:5043"]
+    index: ${INDEX:filebeat}

@@ -1,0 +1,54 @@
+# DEV SERVER
+logging-server-dev:
+  image: logging-server:1
+  ports:
+    - "8080:8080"
+filebeat-dev:
+  build: filebeat
+  volumes_from:
+    - logging-server-dev
+  links:
+    - logstash
+  environment:
+    - INDEX=otherfortesting
+    - ENVIRONMENT=DEV
+    - APPLICATION=SERVER
+
+# PROD SERVER
+logging-server-prod:
+  image: logging-server:1
+  ports:
+    - "8081:8080"
+filebeat-prod:
+  build: filebeat
+  volumes_from:
+    - logging-server-prod
+  links:
+    - logstash
+  environment:
+    - INDEX=otherfortesting
+    - ENVIRONMENT=PROD
+    - APPLICATION=SERVER
+
+# LOGSTASH
+logstash:
+  build: logstash
+  links:
+    - elasticsearch
+# ELASTICSEARCH
+elasticsearch:
+  image: elasticsearch-custom:1
+  ports:
+   - "9200:9200"
+   - "9300:9300"
+  volumes:
+  - /tmp/data:/usr/share/elasticsearch/data
+
+#KIBANA
+kibana:
+  image: kibana
+  ports:
+     - "5601:5601"
+  links:
+   - elasticsearch
+

@@ -1,0 +1,58 @@
+buildscript {
+    ext {
+        springBootVersion = '1.4.0.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath('se.transmode.gradle:gradle-docker:1.2')
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'spring-boot'
+apply plugin: 'docker'
+
+jar {
+    baseName = 'logging-server'
+    version = '0.0.1-SNAPSHOT'
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+version = '1'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile('org.springframework.boot:spring-boot-starter-web') {
+        exclude group: 'ch.qos.logback'
+    }
+
+    compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.1.6'
+    compile group: 'ch.qos.logback', name: 'logback-core', version: '1.1.6'
+    compile group: 'net.logstash.logback', name: 'logstash-logback-encoder', version: '4.7'
+
+    //JS libraries
+    compile group: 'org.webjars', name: 'angularjs', version: '1.5.5'
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.10'
+}
+
+task buildDocker(type: Docker, dependsOn: build) {
+    applicationName = jar.baseName
+    dockerfile = file('src/Dockerfile')
+    doFirst {
+        copy {
+            from jar
+            rename { fileName -> fileName.replace(jar.archiveName, 'logging-server.jar') }
+            into stageDir
+        }
+    }
+}
